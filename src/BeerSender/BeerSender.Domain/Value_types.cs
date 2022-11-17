@@ -15,3 +15,4 @@ public enum Carrier
 }
 
 public record Beer_bottle(string Brewery, string Name);
+public record Package_capacity(int Capacity);

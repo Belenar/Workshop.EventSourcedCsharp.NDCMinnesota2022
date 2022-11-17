@@ -1,4 +1,6 @@
-﻿namespace BeerSender.Domain;
+﻿using BeerSender.Domain.Infrastructure.Command_handlers;
+
+namespace BeerSender.Domain.Infrastructure;
 
 public class Command_router
 {
@@ -14,19 +16,15 @@ public class Command_router
 
     public void Handle_command(object command)
     {
-        switch(command) {
+        switch (command)
+        {
             case Create_package create:
-                var aggregate = new Beer_package();
-                foreach (var @event in _event_stream(create.Package_id))
-                {
-                    aggregate.Apply(@event);
-                }
-
-                foreach (var @event in aggregate.Handle_command(create))
+                var handler = new Create_package_handler();
+                handler.ApplyEventStream(_event_stream(create.Package_id));
+                foreach (var @event in handler.Handle_command(create))
                 {
                     _publish_event(@event);
                 }
-                
                 return;
         }
     }

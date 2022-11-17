@@ -12,7 +12,7 @@ public class Create_package_test : Beer_sender_test
         Given();
 
         When(
-            new Create_package(package_id)
+            new Create_package(package_id, new Package_capacity(24))
         );
 
         Expect(
