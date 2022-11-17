@@ -14,6 +14,7 @@ public class SqlEventStream
         return _eventContext.PersistedEvent
             .Where(e => e.AggregateId == aggregateId)
             .OrderBy(e => e.CreatedOn)
+            .Select(e => e.Event)
             .ToList();
     }
 
