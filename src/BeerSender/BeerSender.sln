@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.Domain", "BeerSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{BB97B94E-3A62-4DCC-856F-14178F2511E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.Tests", "BeerSender.Tests\BeerSender.Tests.csproj", "{E7E5DB00-F995-4899-9661-9165E8E6C3F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BB97B94E-3A62-4DCC-856F-14178F2511E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB97B94E-3A62-4DCC-856F-14178F2511E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB97B94E-3A62-4DCC-856F-14178F2511E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7E5DB00-F995-4899-9661-9165E8E6C3F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E5DB00-F995-4899-9661-9165E8E6C3F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E5DB00-F995-4899-9661-9165E8E6C3F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E5DB00-F995-4899-9661-9165E8E6C3F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
