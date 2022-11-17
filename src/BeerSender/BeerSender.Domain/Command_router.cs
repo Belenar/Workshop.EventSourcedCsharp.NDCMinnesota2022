@@ -1,19 +1,25 @@
-﻿namespace BeerSender.Domain;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BeerSender.Domain;
 
 public class Command_router
 {
-    private readonly Func<Guid, IEnumerable<object>> _eventStream;
-    private readonly Action<object> _publishEvent;
+    private readonly Func<Guid, IEnumerable<object>> _event_stream;
+    private readonly Action<object> _publish_event;
 
     public Command_router(Func<Guid, IEnumerable<object>> event_stream,
         Action<object> publish_event)
     {
-        _eventStream = event_stream;
-        _publishEvent = publish_event;
+        _event_stream = event_stream;
+        _publish_event = publish_event;
     }
 
     public void Handle_command(object command)
     {
-
+        switch(command) {
+            case Create_package create:
+                _publish_event(new Package_created(create.Package_id));
+                return;
+        }
     }
 }
