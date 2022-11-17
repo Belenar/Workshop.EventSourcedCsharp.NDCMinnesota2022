@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace BeerSender.Domain;
+﻿namespace BeerSender.Domain;
 
 public class Command_router
 {
