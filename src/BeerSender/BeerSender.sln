@@ -5,6 +5,12 @@ VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.API", "BeerSender.API\BeerSender.API.csproj", "{39BC2533-0B9F-41A1-B28F-5EFDC4833EBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.Domain", "BeerSender.Domain\BeerSender.Domain.csproj", "{CF823247-E32D-4058-97B2-E9B05DF5AE08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{E25CE65B-A414-42B7-B85F-EE7678CA610D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.Tests", "BeerSender.Tests\BeerSender.Tests.csproj", "{D7A663E5-9D46-4532-AA68-FE878FDCD665}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{39BC2533-0B9F-41A1-B28F-5EFDC4833EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39BC2533-0B9F-41A1-B28F-5EFDC4833EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39BC2533-0B9F-41A1-B28F-5EFDC4833EBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF823247-E32D-4058-97B2-E9B05DF5AE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF823247-E32D-4058-97B2-E9B05DF5AE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF823247-E32D-4058-97B2-E9B05DF5AE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF823247-E32D-4058-97B2-E9B05DF5AE08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E25CE65B-A414-42B7-B85F-EE7678CA610D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E25CE65B-A414-42B7-B85F-EE7678CA610D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E25CE65B-A414-42B7-B85F-EE7678CA610D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E25CE65B-A414-42B7-B85F-EE7678CA610D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A663E5-9D46-4532-AA68-FE878FDCD665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A663E5-9D46-4532-AA68-FE878FDCD665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A663E5-9D46-4532-AA68-FE878FDCD665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A663E5-9D46-4532-AA68-FE878FDCD665}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,3 +1,8 @@
+using Beersender.API.JsonConverters;
+using BeerSender.API.SqlEventStream;
+using BeerSender.Domain;
+using Microsoft.EntityFrameworkCore;
+
 namespace BeerSender.API
 {
     public class Program
@@ -8,7 +13,21 @@ namespace BeerSender.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddDbContext<EventContext>(opt =>
+            {
+                opt.UseSqlServer("Data Source=localhost;Initial Catalog=EventStore;User ID=sa;Password=Password1!;TrustServerCertificate=True;");
+            });
+
+            builder.Services.AddScoped<SqlEventStream.SqlEventStream>();
+            
+            builder.Services.AddScoped<CommandRouter>(provider =>
+            {
+                var sqlStream = provider.GetService<SqlEventStream.SqlEventStream>();
+                return new CommandRouter(sqlStream.GetEvents, sqlStream.PublishEvent);
+            });
+            
+            builder.Services.AddControllers()
+                .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new CommandConverter()));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
