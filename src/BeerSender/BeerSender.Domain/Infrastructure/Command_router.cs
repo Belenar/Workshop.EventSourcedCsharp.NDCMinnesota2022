@@ -2,7 +2,8 @@
 
 namespace BeerSender.Domain.Infrastructure;
 
-public class Command_router
+public class Command_router<TAggregate>
+    where TAggregate : class, new()
 {
     private readonly Func<Guid, IEnumerable<object>> _event_stream;
     private readonly Action<Guid, object> _publish_event;
@@ -14,26 +15,27 @@ public class Command_router
         _publish_event = publish_event;
     }
 
-    public void Handle_command(object command)
+    public void Handle_command<TCommand>(TCommand command)
+        where TCommand : Command<TAggregate>
     {
-        switch (command)
+        var handler = FindHandler(command);
+        handler.ApplyEventStream(_event_stream(command.AggregateId));
+        foreach (var @event in handler.Handle_command(command))
         {
-            case Create_package create:
-                var create_handler = new Create_package_handler();
-                create_handler.ApplyEventStream(_event_stream(create.Package_id));
-                foreach (var @event in create_handler.Handle_command(create))
-                {
-                    _publish_event(create.Package_id, @event);
-                }
-                return;
-            case Add_beer add_beer:
-                var add_bottle_handler = new Add_bottle_handler();
-                add_bottle_handler.ApplyEventStream(_event_stream(add_beer.Package_id));
-                foreach (var @event in add_bottle_handler.Handle_command(add_beer))
-                {
-                    _publish_event(add_beer.Package_id, @event);
-                }
-                return;
+            _publish_event(command.AggregateId, @event);
         }
+    }
+
+    private static Command_handler<TAggregate, TCommand> FindHandler<TCommand>(TCommand command)
+        where TCommand : Command<TAggregate>
+    {
+        var type = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(x => x.GetTypes())
+            .FirstOrDefault(x => typeof(Command_handler<TAggregate, TCommand>).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+
+        if (type == null)
+            throw new Exception($"Handler not found for type {command.GetType()}");
+        var handler = Activator.CreateInstance(type) as Command_handler<TAggregate, TCommand>;
+        return handler;
     }
 }

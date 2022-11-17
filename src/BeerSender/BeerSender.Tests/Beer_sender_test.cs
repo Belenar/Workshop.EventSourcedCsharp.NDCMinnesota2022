@@ -1,9 +1,11 @@
+using BeerSender.Domain;
 using BeerSender.Domain.Infrastructure;
 using FluentAssertions;
 
 namespace BeerSender.Tests;
 
-public abstract class Beer_sender_test
+public abstract class Beer_sender_test<TAggregate>
+    where TAggregate : class, new()
 {
     private object[] _events;
     private List<object> _resulting_events = new();
@@ -14,9 +16,10 @@ public abstract class Beer_sender_test
         _events = events;
     }
 
-    protected void When(object command)
+    protected void When<TCommand>(TCommand command)
+        where TCommand : Command<TAggregate>
     {
-        var router = new Command_router(
+        var router = new Command_router<TAggregate>(
             _ => _events,
             (_, @event) => _resulting_events.Add(@event));
 

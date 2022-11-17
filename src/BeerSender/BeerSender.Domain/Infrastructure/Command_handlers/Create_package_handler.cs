@@ -5,6 +5,6 @@ internal class Create_package_handler
 {
     public override IEnumerable<object> Handle_command(Create_package command)
     {
-        yield return new Package_created(command.Package_id, command.Capacity);
+        yield return new Package_created(command.AggregateId, command.Capacity);
     }
 }

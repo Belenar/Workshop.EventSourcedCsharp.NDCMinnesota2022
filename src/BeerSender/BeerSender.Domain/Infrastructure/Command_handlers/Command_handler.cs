@@ -3,7 +3,7 @@ namespace BeerSender.Domain.Infrastructure.Command_handlers;
 
 internal abstract class Command_handler<TAggregate, TCommand>
     where TAggregate : class, new()
-
+    where TCommand : Command<TAggregate>
 {
     protected TAggregate _aggregate = new();
 

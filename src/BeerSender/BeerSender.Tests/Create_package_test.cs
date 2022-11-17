@@ -2,7 +2,7 @@ using BeerSender.Domain;
 
 namespace BeerSender.Tests;
 
-public class Create_package_test : Beer_sender_test
+public class Create_package_test : Beer_sender_test<Beer_package>
 {
     [Fact]
     public void Create_package_succeeds()
@@ -21,7 +21,7 @@ public class Create_package_test : Beer_sender_test
     }
 }
 
-public class Add_beer_test : Beer_sender_test
+public class Add_beer_test : Beer_sender_test<Beer_package>
 {
     [Fact]
     public void Add_bottle_to_empty_box_succeeds()

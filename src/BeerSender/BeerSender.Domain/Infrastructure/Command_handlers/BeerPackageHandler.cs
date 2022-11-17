@@ -1,7 +1,8 @@
 ﻿namespace BeerSender.Domain.Infrastructure.Command_handlers;
 
-internal abstract class BeerPackageHandler<TCommand> 
+internal abstract class BeerPackageHandler<TCommand>
     : Command_handler<Beer_package, TCommand>
+    where TCommand : Command<Beer_package>
 {
     protected override void Apply(object @event)
     {

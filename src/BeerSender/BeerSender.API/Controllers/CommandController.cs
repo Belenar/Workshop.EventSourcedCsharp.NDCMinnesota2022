@@ -18,7 +18,8 @@ public class CommandController : ControllerBase
     [HttpPost]
     public IActionResult PostCommand(Command command)
     {
-        _router.Handle_command(command);
+        //TODO: fix this
+      //  _router.Handle_command(command);
         return Accepted();
     }
 }

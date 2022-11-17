@@ -1,6 +1,6 @@
 ﻿namespace BeerSender.Domain;
 
-internal class Beer_package
+public class Beer_package
 {
     public Guid Package_id { get; private set; }
     public Package_capacity Capacity { get; private set; }
