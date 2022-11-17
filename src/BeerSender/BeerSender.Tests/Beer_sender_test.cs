@@ -18,7 +18,7 @@ public abstract class Beer_sender_test
     {
         var router = new Command_router(
             _ => _events,
-            @event => _resulting_events.Add(@event));
+            (_, @event) => _resulting_events.Add(@event));
 
         router.Handle_command(command);
     }

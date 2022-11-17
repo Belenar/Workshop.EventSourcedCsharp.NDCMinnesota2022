@@ -1,8 +1,9 @@
 ﻿namespace BeerSender.Domain;
 
 // Commands
-public record Create_package(Guid Package_id, Package_capacity Capacity);
-public record Add_beer(Guid Package_id, Beer_bottle beer);
+public interface Command {}
+public record Create_package(Guid Package_id, Package_capacity Capacity): Command;
+public record Add_beer(Guid Package_id, Beer_bottle beer): Command;
 
 // Events
 public record Package_created(Guid Package_id, Package_capacity Capacity);

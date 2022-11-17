@@ -5,10 +5,10 @@ namespace BeerSender.Domain.Infrastructure;
 public class Command_router
 {
     private readonly Func<Guid, IEnumerable<object>> _event_stream;
-    private readonly Action<object> _publish_event;
+    private readonly Action<Guid, object> _publish_event;
 
     public Command_router(Func<Guid, IEnumerable<object>> event_stream,
-        Action<object> publish_event)
+        Action<Guid, object> publish_event)
     {
         _event_stream = event_stream;
         _publish_event = publish_event;
@@ -23,7 +23,7 @@ public class Command_router
                 create_handler.ApplyEventStream(_event_stream(create.Package_id));
                 foreach (var @event in create_handler.Handle_command(create))
                 {
-                    _publish_event(@event);
+                    _publish_event(create.Package_id, @event);
                 }
                 return;
             case Add_beer add_beer:
@@ -31,7 +31,7 @@ public class Command_router
                 add_bottle_handler.ApplyEventStream(_event_stream(add_beer.Package_id));
                 foreach (var @event in add_bottle_handler.Handle_command(add_beer))
                 {
-                    _publish_event(@event);
+                    _publish_event(add_beer.Package_id, @event);
                 }
                 return;
         }
