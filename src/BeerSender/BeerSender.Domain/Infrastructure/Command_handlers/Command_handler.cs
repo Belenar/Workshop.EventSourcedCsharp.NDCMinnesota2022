@@ -19,26 +19,3 @@ internal abstract class Command_handler<TAggregate, TCommand>
         }
     }
 }
-
-internal abstract class BeerPackageHandler<TCommand> 
-    : Command_handler<Beer_package, TCommand>
-{
-    protected override void Apply(object @event)
-    {
-        switch (@event)
-        {
-            case Package_created created_event:
-                _aggregate.Create(created_event.Package_id);
-                break;
-        }
-    }
-}
-
-internal class Create_package_handler
-    : BeerPackageHandler<Create_package>
-{
-    public override IEnumerable<object> Handle_command(Create_package command)
-    {
-        yield return new Package_created(command.Package_id);
-    }
-}

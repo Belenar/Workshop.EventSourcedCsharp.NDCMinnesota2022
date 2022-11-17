@@ -19,9 +19,17 @@ public class Command_router
         switch (command)
         {
             case Create_package create:
-                var handler = new Create_package_handler();
-                handler.ApplyEventStream(_event_stream(create.Package_id));
-                foreach (var @event in handler.Handle_command(create))
+                var create_handler = new Create_package_handler();
+                create_handler.ApplyEventStream(_event_stream(create.Package_id));
+                foreach (var @event in create_handler.Handle_command(create))
+                {
+                    _publish_event(@event);
+                }
+                return;
+            case Add_beer add_beer:
+                var add_bottle_handler = new Add_bottle_handler();
+                add_bottle_handler.ApplyEventStream(_event_stream(add_beer.Package_id));
+                foreach (var @event in add_bottle_handler.Handle_command(add_beer))
                 {
                     _publish_event(@event);
                 }
