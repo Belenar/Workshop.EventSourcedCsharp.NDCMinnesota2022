@@ -16,18 +16,30 @@ public class EventContext : DbContext
 
 public class PersistedEvent
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public Guid AggregateId { get; set; }
+    public Guid AggregateId { get; private set; }
 
     [MaxLength(255)]
-    public string EventType { get; set; }
+    public string EventType { get; private set; }
 
-    public string Payload { get; set; }
+    public string Payload { get; private set; }
 
-    public DateTime CreatedOn { get; set; }
+    public DateTime CreatedOn { get; private set; }
 
     object _event;
+
+    public PersistedEvent(Guid aggregateId, object @event)
+    {
+        AggregateId = aggregateId;
+        Event = @event;
+        CreatedOn = DateTime.UtcNow;
+    }
+
+    private PersistedEvent()
+    {
+        
+    }
     
     [NotMapped]
     public object Event

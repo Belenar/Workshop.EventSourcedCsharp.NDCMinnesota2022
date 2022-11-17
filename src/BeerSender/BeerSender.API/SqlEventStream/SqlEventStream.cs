@@ -19,12 +19,7 @@ public class SqlEventStream
 
     public void PublishEvent(Guid aggregateId, object @event)
     {
-        var newEvent = new PersistedEvent
-        {
-            AggregateId = aggregateId,
-            CreatedOn = DateTime.UtcNow,
-            Event = @event
-        };
+        var newEvent = new PersistedEvent(aggregateId, @event);
 
         _eventContext.PersistedEvent.Add(newEvent);
 
