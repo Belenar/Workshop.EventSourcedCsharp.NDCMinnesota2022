@@ -11,7 +11,7 @@ public class EventContext : DbContext
     {
     }
     
-    public DbSet<PersistedEvent> PersistedEvent { get; set; } = null!;
+    public DbSet<PersistedEvent> PersistedEvent { get; private set; } = null!;
 }
 
 public class PersistedEvent
@@ -28,6 +28,7 @@ public class PersistedEvent
     public DateTime CreatedOn { get; set; }
 
     object _event;
+    
     [NotMapped]
     public object Event
     {
