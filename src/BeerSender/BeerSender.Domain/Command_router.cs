@@ -18,7 +18,17 @@ public class Command_router
     {
         switch(command) {
             case Create_package create:
-                _publish_event(new Package_created(create.Package_id));
+                var aggregate = new Beer_package();
+                foreach (var @event in _event_stream(create.Package_id))
+                {
+                    aggregate.Apply(@event);
+                }
+
+                foreach (var @event in aggregate.Handle_command(create))
+                {
+                    _publish_event(@event);
+                }
+                
                 return;
         }
     }
