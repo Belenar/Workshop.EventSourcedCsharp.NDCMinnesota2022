@@ -23,7 +23,7 @@ namespace BeerSender.API.Projections.Infrastructure
                 {
                     Console.WriteLine("Running projection service");
 
-                    var projection = scope.ServiceProvider.GetRequiredService<Beer_package_projection>();
+                    var projection = scope.ServiceProvider.GetRequiredService<TProjection>();
                     var readContext = scope.ServiceProvider.GetRequiredService<Read_context>();
                     var eventContext = scope.ServiceProvider.GetRequiredService<EventContext>();
 
@@ -41,7 +41,7 @@ namespace BeerSender.API.Projections.Infrastructure
         }
 
         private static async Task ProcessEvents(EventContext eventContext, List<string?> filterEvents, Projection_checkpoint checkpoint,
-            Beer_package_projection projection)
+            TProjection projection)
         {
             while (true)
             {
@@ -74,7 +74,7 @@ namespace BeerSender.API.Projections.Infrastructure
             return checkpoint;
         }
 
-        private static async Task RunProjection(List<Persisted_event> events, Beer_package_projection projection)
+        private static async Task RunProjection(List<Persisted_event> events, TProjection projection)
         {
             foreach (var @event in events)
             {
