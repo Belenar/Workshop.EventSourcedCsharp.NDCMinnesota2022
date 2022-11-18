@@ -54,7 +54,7 @@ namespace BeerSender.API.Projections.Infrastructure
                 if (!events.Any())
                     return;
 
-                checkpoint.Event_id = events.MaxBy(e => e.Id).Id;
+                checkpoint.Event_id = events.Max(e => e.Id);
                 await RunProjection(events, projection);
             }
         }
