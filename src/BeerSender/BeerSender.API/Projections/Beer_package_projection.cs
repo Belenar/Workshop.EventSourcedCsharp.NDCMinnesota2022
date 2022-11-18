@@ -33,8 +33,8 @@ public class Beer_package_projection : IProjection
         
     }
 
-    public void Commit()
+    public Task Commit()
     {
-        _database.SaveChanges();
+        return _database.SaveChangesAsync();
     }
 }
