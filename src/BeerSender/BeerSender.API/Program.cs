@@ -1,4 +1,6 @@
 using Beersender.API.JsonConverters;
+using BeerSender.API.Projections;
+using BeerSender.API.Projections.Infrastructure;
 using BeerSender.API.Read_models;
 using BeerSender.API.Sql_event_stream;
 using BeerSender.Domain;
@@ -34,6 +36,9 @@ namespace BeerSender.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<Beer_package_projection>();
+            builder.Services.AddHostedService<Projection_service<Beer_package_projection>>();
 
             var app = builder.Build();
 
