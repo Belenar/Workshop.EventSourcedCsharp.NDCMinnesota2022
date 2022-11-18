@@ -7,7 +7,7 @@ namespace BeerSender.API.Projections.Infrastructure
     public class Projection_service<TProjection> : BackgroundService
         where TProjection : class, IProjection
     {
-        private const int BatchSize = 2;
+        private const int BatchSize = 100;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public Projection_service(IServiceScopeFactory serviceScopeFactory)
@@ -35,7 +35,7 @@ namespace BeerSender.API.Projections.Infrastructure
 
                     await ProcessEvents(eventContext, filterEvents, checkpoint, projection);
 
-                    await Task.Delay(30000);
+                    await Task.Delay(5000);
                 }
             }
         }
