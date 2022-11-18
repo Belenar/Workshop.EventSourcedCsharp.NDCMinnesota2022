@@ -42,7 +42,7 @@ public abstract class Beer_sender_test<TAggregate>
             (_, @event) => _resulting_events.Add(@event));
         var router = new Command_router(eventStream, new AggregateCache());
 
-        router.Handle_command<TCommand, TAggregate>(command);
+        router.Handle_command(command);
     }
 
     protected void Expect(params object[] expected_events)

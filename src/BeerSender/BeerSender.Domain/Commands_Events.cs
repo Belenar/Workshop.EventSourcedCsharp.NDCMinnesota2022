@@ -2,11 +2,11 @@
 
 public interface ICommand
 {
+    Guid Aggregate_id { get; }
 }
 
 public interface ICommand<TAggregate> : ICommand
 {
-    Guid Aggregate_id { get; }
 }
 
 public interface IEvent

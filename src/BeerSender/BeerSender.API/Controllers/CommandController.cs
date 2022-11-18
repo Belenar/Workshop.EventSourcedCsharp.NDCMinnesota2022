@@ -18,8 +18,7 @@ public class CommandController : ControllerBase
     [HttpPost]
     public IActionResult PostCommand(ICommand command)
     {
-        var cmd2 = (Create_package.Command)command;
-        _router.Handle_command<Create_package.Command, Beer_package>(cmd2);
+        _router.Handle_command(command);
         return Accepted();
     }
 }

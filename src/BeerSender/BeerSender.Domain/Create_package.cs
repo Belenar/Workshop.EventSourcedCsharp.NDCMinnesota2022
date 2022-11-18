@@ -4,16 +4,16 @@ namespace BeerSender.Domain;
 
 public class Create_package
 {
-    public record Command(Guid Package_id, Package_capacity Capacity) : BaseCommand<Beer_package>(Package_id);
+    public record CreatePackageCommand(Guid Package_id, Package_capacity Capacity) : BaseCommand<Beer_package>(Package_id);
 
     public record Success(Guid Package_id, Package_capacity Capacity) : IEvent;
 
     internal class CommandHandler
-        : CommandHandlerBase<Command, Beer_package>
+        : CommandHandlerBase<CreatePackageCommand, Beer_package>
     {
-        public override IEnumerable<IEvent> Handle(Beer_package aggregate, Command command)
+        public override IEnumerable<IEvent> Handle(Beer_package aggregate, CreatePackageCommand createPackageCommand)
         {
-            yield return new Success(command.Package_id, command.Capacity);
+            yield return new Success(createPackageCommand.Package_id, createPackageCommand.Capacity);
         }
     }
 

@@ -12,7 +12,7 @@ public class Create_package_test : Beer_sender_test<Beer_package>
         Given();
 
         When(
-            new Create_package.Command(package_id, new Package_capacity(24))
+            new Create_package.CreatePackageCommand(package_id, new Package_capacity(24))
         );
 
         Expect(
@@ -33,7 +33,7 @@ public class Add_beer_test : Beer_sender_test<Beer_package>
             );
 
         When(
-            new Add_beer.Command(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
+            new Add_beer.AddBeerCommand(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
         );
 
         Expect(
@@ -52,7 +52,7 @@ public class Add_beer_test : Beer_sender_test<Beer_package>
         );
 
         When(
-            new Add_beer.Command(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
+            new Add_beer.AddBeerCommand(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
         );
 
         Expect(
