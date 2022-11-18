@@ -28,6 +28,7 @@ namespace BeerSender.API
                     @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ReadModel;Integrated Security=True");
             });
             builder.Services.AddHostedService<Projection_service<Beer_package_projection>>();
+            builder.Services.AddScoped<IProjection, Beer_package_projection>();
             builder.Services.AddScoped<IEventStream, Sql_event_stream.Sql_event_stream>();
             builder.Services.AddScoped<IAggregateCache, AggregateCache>();
             builder.Services.AddScoped<Command_router>();
