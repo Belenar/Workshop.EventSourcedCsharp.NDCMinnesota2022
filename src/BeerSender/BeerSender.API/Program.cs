@@ -1,4 +1,6 @@
 using Beersender.API.JsonConverters;
+using BeerSender.API.Projections;
+using BeerSender.API.Projections.Infrastructure;
 using BeerSender.API.Read_models;
 using BeerSender.API.Sql_event_stream;
 using BeerSender.Domain;
@@ -25,6 +27,7 @@ namespace BeerSender.API
                 opt.UseSqlServer(
                     @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ReadModel;Integrated Security=True");
             });
+            builder.Services.AddHostedService<Projection_service<Beer_package_projection>>();
             builder.Services.AddScoped<IEventStream, Sql_event_stream.Sql_event_stream>();
             builder.Services.AddScoped<IAggregateCache, AggregateCache>();
             builder.Services.AddScoped<Command_router>();
