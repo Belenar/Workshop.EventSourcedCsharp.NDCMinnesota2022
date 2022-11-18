@@ -1,41 +1,63 @@
-﻿using BeerSender.Domain.Infrastructure.Command_handlers;
+﻿namespace BeerSender.Domain.Infrastructure;
 
-namespace BeerSender.Domain.Infrastructure;
+public record AggregateEvent<TEvent>(Guid Aggregate_id, TEvent Event)
+    where TEvent : IEvent;
 
-public class Command_router<TAggregate>
-    where TAggregate : class, new()
+public class Command_router
 {
-    private readonly Func<Guid, IEnumerable<object>> _event_stream;
-    private readonly Action<Guid, object> _publish_event;
+    private readonly IEventStream _event_stream;
+    private readonly IAggregateCache _aggregateCache;
 
-    public Command_router(Func<Guid, IEnumerable<object>> event_stream,
-        Action<Guid, object> publish_event)
+    public Command_router(IEventStream event_stream, IAggregateCache aggregate_cache)
     {
         _event_stream = event_stream;
-        _publish_event = publish_event;
+        _aggregateCache = aggregate_cache;
     }
 
-    public void Handle_command<TCommand>(TCommand command)
-        where TCommand : Command<TAggregate>
+    public void Handle_command<TCommand, TAggregate>(TCommand command)
+        where TCommand : ICommand<TAggregate>
+        where TAggregate : class, new()
     {
-        var handler = FindHandler(command);
-        handler.ApplyEventStream(_event_stream(command.AggregateId));
-        foreach (var @event in handler.Handle_command(command))
+        var aggregate = _aggregateCache.Get<TAggregate>(command.Aggregate_id);
+
+        foreach (var @event in _event_stream.Get_events(command.Aggregate_id))
         {
-            _publish_event(command.AggregateId, @event);
+            InvokeEventHandler(aggregate, @event);
+        }
+
+        var commandHandler = GetCommandHandler<TCommand, TAggregate>();
+        foreach (var @event in commandHandler.Handle(aggregate, command))
+        {
+            _event_stream.Publish_event(command.Aggregate_id, @event);
         }
     }
 
-    private static Command_handler<TAggregate, TCommand> FindHandler<TCommand>(TCommand command)
-        where TCommand : Command<TAggregate>
+    private CommandHandlerBase<TCommand, TAggregate> GetCommandHandler<TCommand, TAggregate>()
+        where TCommand : ICommand<TAggregate>
+        where TAggregate : class, new()
     {
-        var type = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .FirstOrDefault(x => typeof(Command_handler<TAggregate, TCommand>).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+        var allTypes = typeof(Command_router).Assembly.GetTypes().ToList();
+        var genericType = typeof(CommandHandlerBase<,>).MakeGenericType(typeof(TCommand), typeof(TAggregate));
 
-        if (type == null)
-            throw new Exception($"Handler not found for type {command.GetType()}");
-        var handler = Activator.CreateInstance(type) as Command_handler<TAggregate, TCommand>;
-        return handler;
+        var commandHandlerType = allTypes
+            .Where(t => genericType.IsAssignableFrom(t) && !t.IsAbstract)
+            .FirstOrDefault();
+
+        return (CommandHandlerBase<TCommand, TAggregate>)Activator.CreateInstance(commandHandlerType);
+    }
+
+    private void InvokeEventHandler<TAggregate>(TAggregate aggregate, IEvent @event)
+        where TAggregate : class, new()
+    {
+        var allTypes = typeof(Command_router).Assembly.GetTypes().ToList();
+        var genericType = typeof(EventHandlerBase<,>).MakeGenericType(@event.GetType(), typeof(TAggregate));
+
+        var eventHandlerType = allTypes
+            .Where(t => genericType.IsAssignableFrom(t) && !t.IsAbstract)
+            .FirstOrDefault();
+
+        var handler = Activator.CreateInstance(eventHandlerType);
+        var handleMethod = genericType.GetMethod("Handle");
+        handleMethod.Invoke(handler, new object[] { aggregate, @event });
     }
 }

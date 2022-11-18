@@ -12,11 +12,11 @@ public class Create_package_test : Beer_sender_test<Beer_package>
         Given();
 
         When(
-            new Create_package(package_id, new Package_capacity(24))
+            new Create_package.Command(package_id, new Package_capacity(24))
         );
 
         Expect(
-            new Package_created(package_id, new Package_capacity(24))
+            new Create_package.Success(package_id, new Package_capacity(24))
         );
     }
 }
@@ -29,15 +29,15 @@ public class Add_beer_test : Beer_sender_test<Beer_package>
         var package_id = Guid.NewGuid();
 
         Given(
-            new Package_created(package_id, new Package_capacity(24))
+            new Create_package.Success(package_id, new Package_capacity(24))
             );
 
         When(
-            new Add_beer(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
+            new Add_beer.Command(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
         );
 
         Expect(
-            new Beer_added(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
+            new Add_beer.Success(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
         );
     }
 
@@ -47,16 +47,16 @@ public class Add_beer_test : Beer_sender_test<Beer_package>
         var package_id = Guid.NewGuid();
 
         Given(
-            new Package_created(package_id, new Package_capacity(1)),
-            new Beer_added(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
+            new Create_package.Success(package_id, new Package_capacity(1)),
+            new Add_beer.Success(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
         );
 
         When(
-            new Add_beer(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
+            new Add_beer.Command(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"))
         );
 
         Expect(
-            new Beer_failed_to_add(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"), Fail_reason.Box_was_full)
+            new Add_beer.Fail(package_id, new Beer_bottle("Gouden Carolus", "Quadruple Whisky Infused"), Add_beer.Fail_reason.Box_was_full)
         );
     }
 }

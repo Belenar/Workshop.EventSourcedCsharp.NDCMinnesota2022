@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+using BeerSender.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeerSender.API.Sql_event_stream;
 
 public class EventContext : DbContext
 {
-    public EventContext(DbContextOptions<EventContext> options): base(options)
+    public EventContext(DbContextOptions<EventContext> options) : base(options)
     { }
 
     public DbSet<Persisted_event> Events { get; set; }
@@ -23,16 +24,16 @@ public class Persisted_event
     public string Payload { get; set; }
     public DateTime Timestamp { get; set; }
 
-    object _event;
+    IEvent _event;
     [NotMapped]
-    public object Event
+    public IEvent Event
     {
         get
         {
             if (_event == null)
             {
                 var type = Type.GetType(Event_type);
-                _event = JsonSerializer.Deserialize(Payload, type);
+                _event = (IEvent)JsonSerializer.Deserialize(Payload, type);
             }
             return _event;
         }

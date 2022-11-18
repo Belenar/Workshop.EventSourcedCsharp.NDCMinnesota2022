@@ -6,7 +6,6 @@ public class Beer_package
     public Package_capacity Capacity { get; private set; }
     public List<Beer_bottle> Contents { get; } = new();
 
-
     public void Create(Guid package_id, Package_capacity package_capacity)
     {
         Package_id = package_id;

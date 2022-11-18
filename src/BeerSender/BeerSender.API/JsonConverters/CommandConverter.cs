@@ -4,15 +4,15 @@ using BeerSender.Domain;
 
 namespace Beersender.API.JsonConverters
 {
-    public class CommandConverter : JsonConverter<Command>
+    public class CommandConverter : JsonConverter<ICommand>
     {
         private static Dictionary<string, Type> TypeLookup = new();
         static CommandConverter()
         {
-            var command_types = typeof(Command)
+            var command_types = typeof(ICommand)
                 .Assembly
                 .GetTypes()
-                .Where(type => !type.IsAbstract && typeof(Command).IsAssignableFrom(type));
+                .Where(type => !type.IsAbstract && typeof(ICommand).IsAssignableFrom(type));
 
             foreach (var command_type in command_types)
             {
@@ -22,10 +22,10 @@ namespace Beersender.API.JsonConverters
 
         public override bool CanConvert(Type type)
         {
-            return typeof(Command).IsAssignableFrom(type);
+            return typeof(ICommand).IsAssignableFrom(type);
         }
 
-        public override Command Read(
+        public override ICommand Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
         JsonSerializerOptions options)
@@ -47,7 +47,7 @@ namespace Beersender.API.JsonConverters
                 throw new JsonException();
             }
 
-            Command command;
+            ICommand command;
             string typeDiscriminator = reader.GetString();
             var commandType = TypeLookup[typeDiscriminator];
 
@@ -61,7 +61,7 @@ namespace Beersender.API.JsonConverters
                 throw new JsonException();
             }
 
-            command = (Command)JsonSerializer.Deserialize(ref reader, commandType);
+            command = (ICommand)JsonSerializer.Deserialize(ref reader, commandType);
 
             if (!reader.Read() || reader.TokenType != JsonTokenType.EndObject)
             {
@@ -73,7 +73,7 @@ namespace Beersender.API.JsonConverters
 
         public override void Write(
             Utf8JsonWriter writer,
-            Command value,
+            ICommand value,
             JsonSerializerOptions options)
         {
             writer.WriteStartObject();

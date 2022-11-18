@@ -6,6 +6,8 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
+            var tmp = typeof(Create_package).AssemblyQualifiedName;
+
             var label1 = new Shipping_label("123456", Carrier.DHL);
             var label2 = new Shipping_label("123456", Carrier.DHL);
 

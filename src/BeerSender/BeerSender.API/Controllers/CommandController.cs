@@ -1,6 +1,5 @@
 ﻿using BeerSender.Domain;
 using BeerSender.Domain.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeerSender.API.Controllers;
@@ -15,11 +14,12 @@ public class CommandController : ControllerBase
     {
         _router = router;
     }
+
     [HttpPost]
-    public IActionResult PostCommand(Command command)
+    public IActionResult PostCommand(ICommand command)
     {
-        //TODO: fix this
-      //  _router.Handle_command(command);
+        var cmd2 = (Create_package.Command)command;
+        _router.Handle_command<Create_package.Command, Beer_package>(cmd2);
         return Accepted();
     }
 }

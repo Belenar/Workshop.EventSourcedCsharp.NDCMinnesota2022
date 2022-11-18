@@ -1,6 +1,9 @@
-﻿namespace BeerSender.API.Sql_event_stream
+﻿using BeerSender.Domain;
+using BeerSender.Domain.Infrastructure;
+
+namespace BeerSender.API.Sql_event_stream
 {
-    public class Sql_event_stream
+    public class Sql_event_stream : IEventStream
     {
         private readonly EventContext _context;
 
@@ -9,15 +12,16 @@
             _context = context;
         }
 
-        public IEnumerable<object> Get_events(Guid aggregate_id)
+        public IEnumerable<IEvent> Get_events(Guid aggregate_id)
         {
             return _context.Events
                 .Where(e => e.Aggregate_id == aggregate_id)
                 .OrderBy(e => e.Timestamp)
+                .Select(e => e.Event)
                 .ToList();
         }
 
-        public void Publish_event(Guid aggregate_id, object @event)
+        public void Publish_event(Guid aggregate_id, IEvent @event)
         {
             var new_event = new Persisted_event
             {
