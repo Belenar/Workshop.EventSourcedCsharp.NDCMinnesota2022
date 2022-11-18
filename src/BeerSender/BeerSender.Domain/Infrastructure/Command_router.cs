@@ -34,6 +34,7 @@ public class Command_router
 
         foreach (var @event in InvokeCommandHandler(command.GetType(), aggregateType, aggregate, command))
         {
+            InvokeEventHandler(aggregateType, aggregate, @event);
             _event_stream.Publish_event(command.Aggregate_id, @event);
         }
     }

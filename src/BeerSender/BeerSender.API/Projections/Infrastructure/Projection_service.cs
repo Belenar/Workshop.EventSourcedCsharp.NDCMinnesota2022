@@ -55,6 +55,7 @@ namespace BeerSender.API.Projections.Infrastructure
                 .Where(e => e.Id > from_id)
                 .Where(e => event_types.Contains(e.Event_type))
                 .Take(Batch_size)
+                .OrderBy(e => e.Id)
                 .ToListAsync();
 
             return events;
