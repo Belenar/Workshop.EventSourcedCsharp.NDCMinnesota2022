@@ -26,6 +26,7 @@ public class Command_router
         foreach (var @event in InvokeCommandHandler(command.GetType(), aggregateType, aggregate, command))
         {
             _event_stream.Publish_event(command.Aggregate_id, @event);
+            InvokeEventHandler(aggregateType, aggregate, @event);
         }
     }
 
