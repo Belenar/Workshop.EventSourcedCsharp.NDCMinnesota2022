@@ -7,6 +7,7 @@ namespace BeerSender.API.Projections.Infrastructure
     public class Projection_service<TProjection> : BackgroundService
         where TProjection : class, IProjection
     {
+        private const int BatchSize = 10;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public Projection_service(IServiceScopeFactory serviceScopeFactory)
@@ -31,6 +32,7 @@ namespace BeerSender.API.Projections.Infrastructure
                         .ToList();
 
                     var checkpoint = await GetProjectionCheckpoint(readContext);
+
                     var events = eventContext.Events
                         .Where(e => filterEvents.Contains(e.Event_type) && e.Id > checkpoint.Event_id)
                         .OrderBy(e => e.Id)
@@ -38,11 +40,14 @@ namespace BeerSender.API.Projections.Infrastructure
 
                     if (events.Any())
                     {
-                        checkpoint.Event_id = events.MaxBy(e => e.Id).Id;
-                        await RunProjection(events, projection);
+                        foreach (var chunk in Chunk(events, BatchSize))
+                        {
+                            checkpoint.Event_id = chunk.MaxBy(e => e.Id).Id;
+                            await RunProjection(chunk, projection);
+                        }
                     }
 
-                    await Task.Delay(5000);
+                    await Task.Delay(30000);
                 }
             }
         }
@@ -70,6 +75,15 @@ namespace BeerSender.API.Projections.Infrastructure
             }
 
             await projection.Commit();
+        }
+
+        public static Queue<List<T>> Chunk<T>(IList<T> source, int groupSize)
+        {
+            return new(source
+                .Select((x, i) => new { Index = i, Value = x })
+                .GroupBy(x => x.Index / groupSize)
+                .Select(x => x.Select(v => v.Value).ToList())
+                .ToList());
         }
     }
 }
