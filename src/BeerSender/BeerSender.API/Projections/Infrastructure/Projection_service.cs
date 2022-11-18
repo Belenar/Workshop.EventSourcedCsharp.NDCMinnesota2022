@@ -41,13 +41,10 @@ namespace BeerSender.API.Projections.Infrastructure
                     isNewCheckpoint = true;
                 }
 
-                var events = GetEventsSince(checkpoint.Event_id, 100);
+                var events = GetEventsSince(checkpoint.Event_id, projection.Source_event_types, 100);
 
                 foreach (var @event in events)
                 {
-                    if (!projection.Source_event_types.Contains(@event.GetType()))
-                        continue;
-
                     projection.Project(@event.Event);
 
                     checkpoint.Event_id = @event.Id;
@@ -79,7 +76,7 @@ namespace BeerSender.API.Projections.Infrastructure
                             x.Projection_name == projectionName);
         }
 
-        private IReadOnlyCollection<Persisted_event> GetEventsSince(int checkpointEventId, int batchSize)
+        private IReadOnlyCollection<Persisted_event> GetEventsSince(int checkpointEventId, Type[] source_event_types, int batchSize)
         {
             using var scope = _services.CreateScope();
 
@@ -87,6 +84,7 @@ namespace BeerSender.API.Projections.Infrastructure
 
             return eventContext.Events
                         .Where(e => e.Id > checkpointEventId)
+                        .Where(e => source_event_types.Contains(e.Event.GetType()))
                         .OrderBy(e => e.Id)
                         .Take(batchSize)
                         .ToList();
