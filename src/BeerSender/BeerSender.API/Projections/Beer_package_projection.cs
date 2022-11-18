@@ -12,6 +12,8 @@ public class Beer_package_projection : IProjection
         _database = database;
     }
 
+    public string ProjectionName => GetType().ToString();
+
     // Events we're interested in
     public Type[] Source_event_types => new[] {
         typeof(Add_beer.Success)
