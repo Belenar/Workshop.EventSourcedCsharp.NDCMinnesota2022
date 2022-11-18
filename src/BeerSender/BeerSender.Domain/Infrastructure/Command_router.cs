@@ -1,9 +1,4 @@
-﻿using System.Collections;
-
-namespace BeerSender.Domain.Infrastructure;
-
-public record AggregateEvent<TEvent>(Guid Aggregate_id, TEvent Event)
-    where TEvent : IEvent;
+﻿namespace BeerSender.Domain.Infrastructure;
 
 public class Command_router
 {
@@ -38,18 +33,20 @@ public class Command_router
         }
     }
 
-    private IEnumerable<IEvent> InvokeCommandHandler(Type commandType, Type aggregateType, object aggregate, ICommand command)
+    private IEnumerable<IEvent>? InvokeCommandHandler(Type commandType, Type aggregateType, object aggregate, ICommand command)
     {
         var allTypes = typeof(Command_router).Assembly.GetTypes().ToList();
         var genericType = typeof(CommandHandlerBase<,>).MakeGenericType(commandType, aggregateType);
 
         var commandHandlerType = allTypes
-            .Where(t => genericType.IsAssignableFrom(t) && !t.IsAbstract)
-            .FirstOrDefault();
+            .FirstOrDefault(t => genericType.IsAssignableFrom(t) && !t.IsAbstract);
+
+        if (commandHandlerType == null)
+            throw new Exception($"No command handler registered for {commandType.FullName}");
 
         var handler = Activator.CreateInstance(commandHandlerType);
         var handleMethod = genericType.GetMethod("Handle");
-        return (IEnumerable<IEvent>)handleMethod.Invoke(handler, new object[] { aggregate, command });
+        return (IEnumerable<IEvent>)handleMethod.Invoke(handler, new[] { aggregate, command });
     }
 
     private void InvokeEventHandler(Type aggregateType, object aggregate, IEvent @event)
@@ -58,11 +55,13 @@ public class Command_router
         var genericType = typeof(EventHandlerBase<,>).MakeGenericType(@event.GetType(), aggregateType);
 
         var eventHandlerType = allTypes
-            .Where(t => genericType.IsAssignableFrom(t) && !t.IsAbstract)
-            .FirstOrDefault();
+            .FirstOrDefault(t => genericType.IsAssignableFrom(t) && !t.IsAbstract);
+
+        if (eventHandlerType == null)
+            return;
 
         var handler = Activator.CreateInstance(eventHandlerType);
         var handleMethod = genericType.GetMethod("Handle");
-        handleMethod.Invoke(handler, new object[] { aggregate, @event });
+        handleMethod.Invoke(handler, new[] { aggregate, @event });
     }
 }
