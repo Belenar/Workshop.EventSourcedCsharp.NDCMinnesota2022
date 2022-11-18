@@ -33,23 +33,29 @@ namespace BeerSender.API.Projections.Infrastructure
 
                     var checkpoint = await GetProjectionCheckpoint(readContext);
 
-                    while (true)
-                    {
-                        var events = eventContext.Events
-                            .Where(e => filterEvents.Contains(e.Event_type) && e.Id > checkpoint.Event_id)
-                            .OrderBy(e => e.Id)
-                            .Take(BatchSize)
-                            .ToList();
-
-                        if (!events.Any())
-                            break;
-
-                        checkpoint.Event_id = events.MaxBy(e => e.Id).Id;
-                        await RunProjection(events, projection);
-                    }
+                    await ProcessEvents(eventContext, filterEvents, checkpoint, projection);
 
                     await Task.Delay(30000);
                 }
+            }
+        }
+
+        private static async Task ProcessEvents(EventContext eventContext, List<string?> filterEvents, Projection_checkpoint checkpoint,
+            Beer_package_projection projection)
+        {
+            while (true)
+            {
+                var events = eventContext.Events
+                    .Where(e => filterEvents.Contains(e.Event_type) && e.Id > checkpoint.Event_id)
+                    .OrderBy(e => e.Id)
+                    .Take(BatchSize)
+                    .ToList();
+
+                if (!events.Any())
+                    return;
+
+                checkpoint.Event_id = events.MaxBy(e => e.Id).Id;
+                await RunProjection(events, projection);
             }
         }
 
