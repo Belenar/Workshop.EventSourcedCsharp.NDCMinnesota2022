@@ -16,11 +16,7 @@ public class Command_router
         var actualType = command.GetType();
         var aggregateType = actualType.BaseType.GetGenericArguments()[0];
 
-        var getAggMethod = _aggregateCache.GetType()
-            .GetMethod("Get")
-            .MakeGenericMethod(aggregateType);
-
-        var aggregate = getAggMethod.Invoke(_aggregateCache, new object[] { command.Aggregate_id });
+        var aggregate = _aggregateCache.Get(aggregateType, command.Aggregate_id);
 
         foreach (var @event in _event_stream.Get_events(command.Aggregate_id))
         {

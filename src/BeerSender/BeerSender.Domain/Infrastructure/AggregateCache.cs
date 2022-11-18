@@ -2,7 +2,7 @@
 {
     public interface IAggregateCache
     {
-        TAggregate Get<TAggregate>(Guid aggregate_id) where TAggregate : class, new();
+        object Get(Type aggregate_type, Guid aggregate_id);
     }
 
     public class AggregateCache : IAggregateCache
@@ -14,15 +14,14 @@
             _cache = new Dictionary<Guid, object>();
         }
 
-        public TAggregate Get<TAggregate>(Guid aggregate_id)
-            where TAggregate : class, new()
+        public object Get(Type aggregate_type, Guid aggregate_id)
         {
             if (_cache.TryGetValue(aggregate_id, out var aggregate))
-                return (TAggregate)aggregate;
+                return aggregate;
 
-            var tmp = new TAggregate();
-            _cache.Add(aggregate_id, tmp);
-            return tmp;
+            aggregate = Activator.CreateInstance(aggregate_type);
+            _cache.Add(aggregate_id, aggregate);
+            return aggregate;
         }
     }
 }
