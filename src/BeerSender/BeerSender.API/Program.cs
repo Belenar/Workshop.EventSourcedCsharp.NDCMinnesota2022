@@ -1,5 +1,6 @@
 using Beersender.API.JsonConverters;
 using BeerSender.API.SqlEventStream;
+using BeerSender.API.SqlEventStream.ReadModels;
 using BeerSender.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,11 @@ namespace BeerSender.API
             builder.Services.AddDbContext<EventContext>(opt =>
             {
                 opt.UseSqlServer("Data Source=localhost;Initial Catalog=EventStore;User ID=sa;Password=Password1!;TrustServerCertificate=True;");
+            });
+            
+            builder.Services.AddDbContext<ReadContext>(opt =>
+            {
+                opt.UseSqlServer("Data Source=localhost;Initial Catalog=ReadModel;User ID=sa;Password=Password1!;TrustServerCertificate=True;");
             });
 
             builder.Services.AddScoped<SqlEventStream.SqlEventStream>();
